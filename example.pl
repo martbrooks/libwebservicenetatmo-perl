@@ -36,8 +36,8 @@ foreach my $station ( keys %stationdata ) {
     my $stationname = $stationdata{$station}{station_name};
     say $stationname;
     foreach my $module ( keys %{ $stationdata{$station}{submodules} } ) {
-        my $modulename  = $stationdata{$station}{submodules}{"$module"}{module_name};
-        my $temperature = $stationdata{$station}{submodules}{"$module"}{dashboard_data}->{Temperature};
+        my $modulename  = $stationdata{$station}{submodules}{$module}{module_name};
+        my $temperature = $stationdata{$station}{submodules}{$module}{dashboard_data}->{Temperature};
         say "- $modulename: $temperature";
     }
 }
