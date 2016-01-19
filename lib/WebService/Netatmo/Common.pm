@@ -22,32 +22,33 @@ has token_last_updated => ( is => 'rw' );
 
 sub _get_or_refresh_token {
     my $self       = shift;
+    my $now        = DateTime->now();
     my $tokenstore = $self->tokenstore;
     my $store;
 
     if ( -e $tokenstore ) {
+        _debug( $self, "Reading stored tokens from '$tokenstore.'" );
         $store = LoadFile("$tokenstore");
-        say "LOADED";
+        my $lastupdate = DateTime::Format::DateParse->parse_datetime( $store->{token_last_updated} );
+        my $diffsecs   = $now->epoch() - $lastupdate->epoch();
+        _debug( $self, "Token is $diffsecs seconds old." );
     } else {
-        say "FETCHING";
+        _debug( $self, "Fetching new tokens." );
         $store = __get_token($self);
+        $store->{token_last_updated} = $now->datetime();
     }
-
-    my $now = DateTime->now();
-    $store->{token_last_updated} = $now->datetime();
 
     $self->access_token( $store->{access_token} );
     $self->refresh_token( $store->{refresh_token} );
     $self->token_expires( $store->{expires_in} );
     $self->token_last_updated( $store->{token_last_updated} );
 
-    # DumpFile( "$tokenstore", $store );
+    DumpFile( "$tokenstore", $store );
 }
 
 sub __get_token {
     my $self = shift;
     my $ua   = LWP::UserAgent->new;
-    my $now  = DateTime->now;
     my $r    = $ua->post(
         'https://api.netatmo.net/oauth2/token',
         [
@@ -68,4 +69,11 @@ sub __get_token {
     return $content;
 }
 
+sub _debug {
+    my ( $self, $message ) = @_;
+    if ( $self->debug ) {
+        my $now = DateTime->now();
+        say "[$now] $message";
+    }
+}
 1;
