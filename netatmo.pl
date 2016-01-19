@@ -30,4 +30,5 @@ my $netatmo = WebService::Netatmo::WeatherStation->new(
     debug         => $debug,
 );
 
-print Dumper $netatmo;
+my $data=$netatmo->getstationsdata();
+print Dumper $data;

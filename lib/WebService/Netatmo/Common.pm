@@ -8,6 +8,8 @@ use JSON::XS;
 use LWP::UserAgent;
 use YAML::XS qw(LoadFile DumpFile);
 
+our $API='https://api.netatmo.net/api';
+
 has client_id          => ( is => 'ro' );
 has client_secret      => ( is => 'ro' );
 has username           => ( is => 'ro' );
