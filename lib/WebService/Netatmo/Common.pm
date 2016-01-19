@@ -33,11 +33,12 @@ sub _get_or_refresh_token {
         my $diffsecs   = $now->epoch() - $lastupdate->epoch();
         _debug( $self, "Token is $diffsecs seconds old." );
 
-        # if ( $diffsecs > $store->{expires_in} ) {
-        if ( $diffsecs > 60 ) {
+        if ( $diffsecs > $store->{expires_in} ) {
             _debug( $self, 'Refreshing tokens.' );
             $self->refresh_token( $store->{refresh_token} );
             my $newstore = $self->__refresh_token();
+            _debug( $self, "Old access token: $store->{access_token}" );
+            _debug( $self, "New access token: $newstore->{access_token}" );
             $store->{access_token}       = $newstore->{access_token};
             $store->{refresh_token}      = $newstore->{refresh_token};
             $store->{token_last_updated} = $now->datetime();
