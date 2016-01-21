@@ -47,17 +47,22 @@ sub __post_process_station_data {
 
         foreach my $key ( keys %{$station} ) {
             next if ( grep { $key =~ /$_/ } @skip );
-
             $stationdata{$stationid}{submodules}{$stationid}{$key} = $station->{$key};
+        }
 
-            foreach my $module ( @{ $station->{'modules'} } ) {
-                my $moduleid = $module->{_id};
-                foreach my $key ( keys %{$module} ) {
-                    $stationdata{$stationid}{submodules}{$moduleid}{$key} = $module->{$key};
-                }
+        foreach my $module ( @{ $station->{'modules'} } ) {
+            my $moduleid = $module->{_id};
+
+            foreach my $key ( keys %{$module} ) {
+                $stationdata{$stationid}{submodules}{$moduleid}{$key} = $module->{$key};
             }
         }
 
+        foreach my $submodule ( keys %{ $stationdata{$stationid}{submodules} } ) {
+            foreach my $metric ( @{ $stationdata{$stationid}{submodules}{$submodule}->{data_type} } ) {
+                $stationdata{$stationid}{submodules}{$submodule}{"has$metric"} = 1;
+            }
+        }
     }
     return %stationdata;
 }
