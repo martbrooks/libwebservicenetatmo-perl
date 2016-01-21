@@ -19,7 +19,7 @@ my $client_secret = $yaml->{client_secret};
 my $username      = $yaml->{username};
 my $password      = $yaml->{password};
 my $tokenstore    = './tokenstore.yaml';
-my $debug         = 0;
+my $debug         = 1;
 
 my $netatmo = WebService::Netatmo::WeatherStation->new(
     client_id     => $client_id,
@@ -35,6 +35,7 @@ my %stationdata = $netatmo->getstationsdata();
 foreach my $station ( keys %stationdata ) {
     my $stationname = $stationdata{$station}{station_name};
     say $stationname;
+
     foreach my $module ( keys %{ $stationdata{$station}{submodules} } ) {
         my $modulename  = $stationdata{$station}{submodules}{$module}{module_name};
         my $temperature = $stationdata{$station}{submodules}{$module}{dashboard_data}->{Temperature};

@@ -38,22 +38,28 @@ sub __post_process_station_data {
 
         $stationdata{$stationid}{place}        = $station->{place};
         $stationdata{$stationid}{station_name} = $station->{station_name};
+        $stationdata{$stationid}{status}       = $station->{status};
+        $stationdata{$stationid}{time_exec}    = $station->{time_exec};
+        $stationdata{$stationid}{time_server}  = $station->{time_server};
+        $stationdata{$stationid}{user}         = $station->{user};
+
+        my @skip = qw(place modules station_name status time_exec time_server user);
 
         foreach my $key ( keys %{$station} ) {
-            next if $key eq 'place';
-            next if $key eq 'modules';
-            next if $key eq 'station_name';
-            $stationdata{$stationid}{submodules}{$stationid}{$key} = $station->{$key};
-        }
+            next if ( grep { $key =~ /$_/ } @skip );
 
-        foreach my $module ( @{ $station->{'modules'} } ) {
-            my $moduleid = $module->{_id};
-            foreach my $key ( keys %{$module} ) {
-                $stationdata{$stationid}{submodules}{$moduleid}{$key} = $module->{$key};
+            $stationdata{$stationid}{submodules}{$stationid}{$key} = $station->{$key};
+
+            foreach my $module ( @{ $station->{'modules'} } ) {
+                my $moduleid = $module->{_id};
+                foreach my $key ( keys %{$module} ) {
+                    $stationdata{$stationid}{submodules}{$moduleid}{$key} = $module->{$key};
+                }
             }
         }
-        return %stationdata;
+
     }
+    return %stationdata;
 }
 
 sub BUILD {
