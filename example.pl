@@ -5,12 +5,31 @@ use strict;
 use warnings;
 use Cwd qw(abs_path);
 use Data::Dumper;
-use DateTime::Format::DateParse;
 use File::Basename qw(dirname);
+use Getopt::Long::Descriptive;
 use YAML::XS qw(LoadFile);
 
 use lib dirname( abs_path $0) . '/lib';
 use WebService::Netatmo::WeatherStation;
+
+my ( $opt, $usage ) = describe_options(
+    "%c %o",
+
+    ['Metrics:'],
+    [
+        'metric|m=s' => hidden => {
+            one_of => [
+                [ 'co2|c'         => 'Report CO2 readings.' ],
+                [ 'humidity|h'    => 'Report humidity readings.' ],
+                [ 'temperature|t' => 'Report temperature readings.' ],
+                [ 'noise|n'       => 'Report noise readings.' ],
+                [ 'pressure|p'    => 'Report pressure readings.' ],
+
+            ]
+        }
+    ],
+    [],
+);
 
 my $yaml = LoadFile("settings.yaml");
 
@@ -21,6 +40,8 @@ my $password      = $yaml->{password};
 my $tokenstore    = './tokenstore.yaml';
 my $debug         = 1;
 
+my $metric = $opt->metric // 'temperature';
+
 my $netatmo = WebService::Netatmo::WeatherStation->new(
     client_id     => $client_id,
     client_secret => $client_secret,
@@ -30,17 +51,11 @@ my $netatmo = WebService::Netatmo::WeatherStation->new(
     debug         => $debug,
 );
 
-my %stationdata = $netatmo->getstationsdata();
+my %temperatures = $netatmo->temperatures;
 
-foreach my $station ( keys %stationdata ) {
-    my $stationname = $stationdata{$station}{station_name};
-    say $stationname;
-
-    foreach my $submodule ( keys %{ $stationdata{$station}{submodules} } ) {
-        if ( $stationdata{$station}{submodules}{$submodule}{hasTemperature} ) {
-            my $submodulename = $stationdata{$station}{submodules}{$submodule}{module_name};
-            my $temperature   = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{Temperature};
-            say "- $submodulename: $temperature";
-        }
+foreach my $station (sort keys %temperatures){
+    say "$station:";
+    foreach my $sensor (sort keys %{$temperatures{$station}}){
+        say "- $sensor: $temperatures{$station}{$sensor}";
     }
 }

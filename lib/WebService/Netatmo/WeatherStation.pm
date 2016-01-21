@@ -29,6 +29,24 @@ sub getstationsdata {
     return %stationdata;
 }
 
+sub temperatures {
+    my $self = shift;
+    my %temperatures;
+    my %stationdata = $self->getstationsdata();
+
+    foreach my $station ( keys %stationdata ) {
+        my $stationname = $stationdata{$station}{station_name};
+        foreach my $submodule ( keys %{ $stationdata{$station}{submodules} } ) {
+            if ( $stationdata{$station}{submodules}{$submodule}{hasTemperature} ) {
+                my $submodulename = $stationdata{$station}{submodules}{$submodule}{module_name};
+                my $temperature   = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{Temperature};
+                $temperatures{$stationname}{$submodulename} = $temperature;
+            }
+        }
+    }
+    return %temperatures;
+}
+
 sub __post_process_station_data {
     my %stationdata;
     my $content = shift;
