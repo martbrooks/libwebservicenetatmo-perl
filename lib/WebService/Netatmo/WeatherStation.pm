@@ -1,6 +1,6 @@
 package WebService::Netatmo::WeatherStation;
 
-use v5.10;
+use v5.14.1;
 use Moo;
 use Data::Dumper;
 use JSON::XS;
@@ -33,18 +33,32 @@ sub temperatures {
     my $self = shift;
     my %temperatures;
     my %stationdata = $self->getstationsdata();
+    my %glyphmap    = (
+        0 => "\x{2103}",
+        1 => "\x{2109}",
+    );
 
     foreach my $station ( keys %stationdata ) {
-        my $stationname = $stationdata{$station}{station_name};
+        my $stationname  = $stationdata{$station}{station_name};
+        my $unit         = $stationdata{$station}{administrative}{unit};
+        my $windunit     = $stationdata{$station}{administrative}{windunit};
+        my $pressureunit = $stationdata{$station}{administrative}{pressureunit};
+
         foreach my $submodule ( keys %{ $stationdata{$station}{submodules} } ) {
             if ( $stationdata{$station}{submodules}{$submodule}{hasTemperature} ) {
                 my $submodulename = $stationdata{$station}{submodules}{$submodule}{module_name};
                 my $temperature   = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{Temperature};
-                $temperatures{$stationname}{$submodulename} = $temperature;
+                $temperatures{$stationname}{$submodulename}{raw} = $temperature;
+
+                # unit : 0 -> metric system, 1 -> imperial system
+                # windunit: 0 -> kph, 1 -> mph, 2 -> ms, 3 -> beaufort, 4 -> knot
+                # pressureunit: 0 -> mbar, 1 -> inHg, 2 -> mmHg
+
+                $temperatures{$stationname}{$submodulename}{pretty} = $temperature . $glyphmap{$unit};
             }
         }
+        return %temperatures;
     }
-    return %temperatures;
 }
 
 sub __post_process_station_data {
@@ -54,12 +68,12 @@ sub __post_process_station_data {
     foreach my $station ( @{ $content->{body}->{devices} } ) {
         my $stationid = $station->{_id};
 
-        $stationdata{$stationid}{place}        = $station->{place};
-        $stationdata{$stationid}{station_name} = $station->{station_name};
-        $stationdata{$stationid}{status}       = $station->{status};
-        $stationdata{$stationid}{time_exec}    = $station->{time_exec};
-        $stationdata{$stationid}{time_server}  = $station->{time_server};
-        $stationdata{$stationid}{user}         = $station->{user};
+        $stationdata{$stationid}{administrative} = $content->{body}->{user}->{administrative};
+        $stationdata{$stationid}{place}          = $station->{place};
+        $stationdata{$stationid}{station_name}   = $station->{station_name};
+        $stationdata{$stationid}{status}         = $station->{status};
+        $stationdata{$stationid}{time_exec}      = $station->{time_exec};
+        $stationdata{$stationid}{time_server}    = $station->{time_server};
 
         my @skip = qw(place modules station_name status time_exec time_server user);
 

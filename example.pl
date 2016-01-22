@@ -12,6 +12,8 @@ use YAML::XS qw(LoadFile);
 use lib dirname( abs_path $0) . '/lib';
 use WebService::Netatmo::WeatherStation;
 
+binmode STDOUT, ':utf8';
+
 my ( $opt, $usage ) = describe_options(
     "%c %o",
 
@@ -53,9 +55,9 @@ my $netatmo = WebService::Netatmo::WeatherStation->new(
 
 my %temperatures = $netatmo->temperatures;
 
-foreach my $station (sort keys %temperatures){
+foreach my $station ( sort keys %temperatures ) {
     say "$station:";
-    foreach my $sensor (sort keys %{$temperatures{$station}}){
-        say "- $sensor: $temperatures{$station}{$sensor}";
+    foreach my $sensor ( sort keys %{ $temperatures{$station} } ) {
+        say "- $sensor: $temperatures{$station}{$sensor}{pretty}";
     }
 }
