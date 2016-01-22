@@ -68,17 +68,14 @@ sub __post_process_station_data {
     foreach my $station ( @{ $content->{body}->{devices} } ) {
         my $stationid = $station->{_id};
 
-        $stationdata{$stationid}{administrative} = $content->{body}->{user}->{administrative};
-        $stationdata{$stationid}{place}          = $station->{place};
-        $stationdata{$stationid}{station_name}   = $station->{station_name};
-        $stationdata{$stationid}{status}         = $station->{status};
-        $stationdata{$stationid}{time_exec}      = $station->{time_exec};
-        $stationdata{$stationid}{time_server}    = $station->{time_server};
-
-        my @skip = qw(place modules station_name status time_exec time_server user);
+        $stationdata{$stationid}{administrative} = delete $content->{body}->{user}->{administrative};
+        $stationdata{$stationid}{place}          = delete $station->{place};
+        $stationdata{$stationid}{station_name}   = delete $station->{station_name};
+        $stationdata{$stationid}{status}         = delete $station->{status};
+        $stationdata{$stationid}{time_exec}      = delete $station->{time_exec};
+        $stationdata{$stationid}{time_server}    = delete $station->{time_server};
 
         foreach my $key ( keys %{$station} ) {
-            next if ( grep { $key =~ /$_/ } @skip );
             $stationdata{$stationid}{submodules}{$stationid}{$key} = $station->{$key};
         }
 
