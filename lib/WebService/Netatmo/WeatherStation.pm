@@ -48,6 +48,10 @@ sub temperatures {
             if ( $stationdata{$station}{submodules}{$submodule}{hasTemperature} ) {
                 my $submodulename = $stationdata{$station}{submodules}{$submodule}{module_name};
                 my $temperature   = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{Temperature};
+                if ( $unit == 1 ) {
+                    $temperature = sprintf( "%.1f", $temperature * 1.8 + 32 );
+                    $temperature += 0;
+                }
                 $temperatures{$stationname}{$submodulename}{raw} = $temperature;
 
                 # unit : 0 -> metric system, 1 -> imperial system
