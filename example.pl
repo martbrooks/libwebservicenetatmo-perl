@@ -54,9 +54,6 @@ my $netatmo = WebService::Netatmo::WeatherStation->new(
 );
 
 my %temperatures = $netatmo->temperatures;
-
-print Dumper %temperatures;
-
 foreach my $station ( sort keys %temperatures ) {
     say "$station:";
     foreach my $sensor ( sort keys %{ $temperatures{$station} } ) {

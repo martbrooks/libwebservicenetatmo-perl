@@ -16,9 +16,13 @@ has username      => ( is => 'ro', required => 1 );
 has password      => ( is => 'ro', required => 1 );
 has tokenstore    => ( is => 'ro', required => 1 );
 has debug         => ( is => 'ro' );
-has access_token  => ( is => 'rw' );
-has refresh_token => ( is => 'rw' );
-has token_expires => ( is => 'rw' );
+has access_token  => (
+    is      => 'rw',
+    lazy    => 1,
+    builder => sub { $_[0]->_get_or_refresh_token() }
+);
+has refresh_token      => ( is => 'rw' );
+has token_expires      => ( is => 'rw' );
 has token_last_updated => ( is => 'rw' );
 
 sub _get_or_refresh_token {
@@ -62,6 +66,7 @@ sub _get_or_refresh_token {
     if ( $haschanged == 1 ) {
         DumpFile( "$tokenstore", $store );
     }
+    return $self->access_token;
 }
 
 sub __get_token {

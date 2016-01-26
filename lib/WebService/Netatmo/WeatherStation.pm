@@ -1,6 +1,6 @@
 package WebService::Netatmo::WeatherStation;
 
-use v5.14.1;
+use v5.10;
 use Moo;
 use Data::Dumper;
 use JSON::MaybeXS;
@@ -20,7 +20,6 @@ sub getstationsdata {
     );
 
     unless ( $r->is_success ) {
-        print Dumper $r;
         die $r->status_line;
     }
 
@@ -98,11 +97,6 @@ sub __post_process_station_data {
         }
     }
     return %stationdata;
-}
-
-sub BUILD {
-    my $self = shift;
-    $self->_get_or_refresh_token();
 }
 
 1;
