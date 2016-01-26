@@ -7,24 +7,29 @@ use JSON::MaybeXS;
 
 extends 'WebService::Netatmo::Common';
 
-our $API = 'https://api.netatmo.net/api';
+our $API   = 'https://api.netatmo.net/api';
+our $cache = '';
 
 sub getstationsdata {
     my $self = shift;
-    my $ua   = LWP::UserAgent->new;
-    my $r    = $ua->post(
-        "$API/getstationsdata",
-        [
-            access_token => $self->access_token,
-        ]
-    );
 
-    unless ( $r->is_success ) {
-        die $r->status_line;
+    if ( $cache eq '' ) {
+        my $ua = LWP::UserAgent->new;
+        my $r  = $ua->post(
+            "$API/getstationsdata",
+            [
+                access_token => $self->access_token,
+            ]
+        );
+
+        unless ( $r->is_success ) {
+            die $r->status_line;
+        }
+
+        $cache = decode_json( $r->decoded_content );
     }
 
-    my $content     = decode_json( $r->decoded_content );
-    my %stationdata = __post_process_station_data($content);
+    my %stationdata = __post_process_station_data($cache);
     return %stationdata;
 }
 
@@ -58,10 +63,6 @@ sub temperatures {
         return %temperatures;
     }
 }
-
-# unit : 0 -> metric system, 1 -> imperial system
-# windunit: 0 -> kph, 1 -> mph, 2 -> ms, 3 -> beaufort, 4 -> knot
-# pressureunit: 0 -> mbar, 1 -> inHg, 2 -> mmHg
 
 sub pressures {
     my $self = shift;
@@ -97,6 +98,26 @@ sub pressures {
     return %pressures;
 }
 
+sub humidities {
+    my $self = shift;
+    my %humidities;
+    my %stationdata = $self->getstationsdata();
+
+    foreach my $station ( keys %stationdata ) {
+        my $stationname = $stationdata{$station}{station_name};
+        my $unit        = $stationdata{$station}{administrative}{pressureunit};
+        foreach my $submodule ( keys %{ $stationdata{$station}{submodules} } ) {
+            if ( $stationdata{$station}{submodules}{$submodule}{hasHumidity} ) {
+                my $submodulename = $stationdata{$station}{submodules}{$submodule}{module_name};
+                my $humidity      = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{Humidity};
+                $humidities{$stationname}{$submodulename}{raw}    = $humidity;
+                $humidities{$stationname}{$submodulename}{pretty} = "$humidity%";
+            }
+        }
+    }
+    return %humidities;
+}
+
 sub __post_process_station_data {
     my %stationdata;
     my $content = shift;
@@ -104,12 +125,12 @@ sub __post_process_station_data {
     foreach my $station ( @{ $content->{body}->{devices} } ) {
         my $stationid = $station->{_id};
 
-        $stationdata{$stationid}{administrative} = delete $content->{body}->{user}->{administrative};
-        $stationdata{$stationid}{place}          = delete $station->{place};
-        $stationdata{$stationid}{station_name}   = delete $station->{station_name};
-        $stationdata{$stationid}{status}         = delete $station->{status};
-        $stationdata{$stationid}{time_exec}      = delete $station->{time_exec};
-        $stationdata{$stationid}{time_server}    = delete $station->{time_server};
+        $stationdata{$stationid}{administrative} = $content->{body}->{user}->{administrative};
+        $stationdata{$stationid}{place}          = $station->{place};
+        $stationdata{$stationid}{station_name}   = $station->{station_name};
+        $stationdata{$stationid}{status}         = $station->{status};
+        $stationdata{$stationid}{time_exec}      = $station->{time_exec};
+        $stationdata{$stationid}{time_server}    = $station->{time_server};
 
         foreach my $key ( keys %{$station} ) {
             $stationdata{$stationid}{submodules}{$stationid}{$key} = $station->{$key};
