@@ -53,10 +53,19 @@ my $netatmo = WebService::Netatmo::WeatherStation->new(
     debug         => $debug,
 );
 
-my %temperatures = $netatmo->temperatures;
-foreach my $station ( sort keys %temperatures ) {
+#my %temperatures = $netatmo->temperatures;
+#foreach my $station ( sort keys %temperatures ) {
+#    say "$station:";
+#    foreach my $sensor ( sort keys %{ $temperatures{$station} } ) {
+#        say "- $sensor: $temperatures{$station}{$sensor}{pretty}";
+#    }
+#}
+
+my %pressures = $netatmo->pressures;
+print Dumper %pressures;
+foreach my $station ( sort keys %pressures ) {
     say "$station:";
-    foreach my $sensor ( sort keys %{ $temperatures{$station} } ) {
-        say "- $sensor: $temperatures{$station}{$sensor}{pretty}";
+    foreach my $sensor ( sort keys %{ $pressures{$station} } ) {
+        say "- $sensor: $pressures{$station}{$sensor}{pretty}";
     }
 }

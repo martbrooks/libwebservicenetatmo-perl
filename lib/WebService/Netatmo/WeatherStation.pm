@@ -51,17 +51,50 @@ sub temperatures {
                     $temperature = sprintf( "%.1f", $temperature * 1.8 + 32 );
                     $temperature += 0;
                 }
-                $temperatures{$stationname}{$submodulename}{raw} = $temperature;
-
-                # unit : 0 -> metric system, 1 -> imperial system
-                # windunit: 0 -> kph, 1 -> mph, 2 -> ms, 3 -> beaufort, 4 -> knot
-                # pressureunit: 0 -> mbar, 1 -> inHg, 2 -> mmHg
-
+                $temperatures{$stationname}{$submodulename}{raw}    = $temperature;
                 $temperatures{$stationname}{$submodulename}{pretty} = $temperature . $glyphmap{$unit};
             }
         }
         return %temperatures;
     }
+}
+
+# unit : 0 -> metric system, 1 -> imperial system
+# windunit: 0 -> kph, 1 -> mph, 2 -> ms, 3 -> beaufort, 4 -> knot
+# pressureunit: 0 -> mbar, 1 -> inHg, 2 -> mmHg
+
+sub pressures {
+    my $self = shift;
+    my %pressures;
+    my %stationdata = $self->getstationsdata();
+    my %glyphmap    = (
+        0 => 'mbar',
+        1 => 'inHg',
+        2 => 'mmHg'
+    );
+
+    foreach my $station ( keys %stationdata ) {
+        my $stationname = $stationdata{$station}{station_name};
+        my $unit        = $stationdata{$station}{administrative}{pressureunit};
+        foreach my $submodule ( keys %{ $stationdata{$station}{submodules} } ) {
+            if ( $stationdata{$station}{submodules}{$submodule}{hasPressure} ) {
+                my $submodulename = $stationdata{$station}{submodules}{$submodule}{module_name};
+                my $pressure      = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{Pressure};
+
+                if ( $unit == 1 ) {
+                    $pressure = sprintf( "%.1f", $pressure * 0.0295301 );
+                }
+                if ( $unit == 2 ) {
+                    $pressure = sprintf( "%.1f", $pressure * 0.75006375541921 );
+                }
+
+                $pressure += 0;
+                $pressures{$stationname}{$submodulename}{raw}    = $pressure;
+                $pressures{$stationname}{$submodulename}{pretty} = $pressure . $glyphmap{$unit};
+            }
+        }
+    }
+    return %pressures;
 }
 
 sub __post_process_station_data {
