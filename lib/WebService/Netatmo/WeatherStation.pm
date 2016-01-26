@@ -3,9 +3,9 @@ package WebService::Netatmo::WeatherStation;
 use v5.14.1;
 use Moo;
 use Data::Dumper;
-use JSON::XS;
+use JSON::MaybeXS;
 
-use parent 'WebService::Netatmo::Common';
+extends 'WebService::Netatmo::Common';
 
 our $API = 'https://api.netatmo.net/api';
 

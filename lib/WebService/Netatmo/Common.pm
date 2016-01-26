@@ -4,21 +4,21 @@ use v5.10;
 
 use Data::Dumper;
 use DateTime::Format::DateParse;
-use JSON::XS;
+use JSON::MaybeXS;
 use LWP::UserAgent;
 use YAML::XS qw(LoadFile DumpFile);
 
 our $API = 'https://api.netatmo.net/api';
 
-has client_id          => ( is => 'ro' );
-has client_secret      => ( is => 'ro' );
-has username           => ( is => 'ro' );
-has password           => ( is => 'ro' );
-has tokenstore         => ( is => 'ro' );
-has debug              => ( is => 'ro' );
-has access_token       => ( is => 'rw' );
-has refresh_token      => ( is => 'rw' );
-has token_expires      => ( is => 'rw' );
+has client_id     => ( is => 'ro', required => 1 );
+has client_secret => ( is => 'ro', required => 1 );
+has username      => ( is => 'ro', required => 1 );
+has password      => ( is => 'ro', required => 1 );
+has tokenstore    => ( is => 'ro', required => 1 );
+has debug         => ( is => 'ro' );
+has access_token  => ( is => 'rw' );
+has refresh_token => ( is => 'rw' );
+has token_expires => ( is => 'rw' );
 has token_last_updated => ( is => 'rw' );
 
 sub _get_or_refresh_token {
