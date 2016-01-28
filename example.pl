@@ -3,6 +3,8 @@
 use v5.10;
 use strict;
 use warnings;
+use utf8;
+
 use Cwd qw(abs_path);
 use Data::Dumper;
 use File::Basename qw(dirname);
@@ -40,7 +42,7 @@ my $client_secret = $yaml->{client_secret};
 my $username      = $yaml->{username};
 my $password      = $yaml->{password};
 my $tokenstore    = './tokenstore.yaml';
-my $debug         = 1;
+my $debug         = 0;
 
 my $metric = $opt->metric // 'temperature';
 
@@ -53,43 +55,24 @@ my $netatmo = WebService::Netatmo::WeatherStation->new(
     debug         => $debug,
 );
 
+my %stations     = $netatmo->getstationsdata;
 my %temperatures = $netatmo->temperatures;
-foreach my $station ( sort keys %temperatures ) {
-    say "$station:";
-    foreach my $sensor ( sort keys %{ $temperatures{$station} } ) {
-        say "- $sensor: $temperatures{$station}{$sensor}{pretty}";
-    }
-}
+my %pressures    = $netatmo->pressures;
+my %humidities   = $netatmo->humidities;
+my %noise        = $netatmo->noise;
+my %co2          = $netatmo->co2;
 
-my %pressures = $netatmo->pressures;
-foreach my $station ( sort keys %pressures ) {
-    say "$station:";
-    foreach my $sensor ( sort keys %{ $pressures{$station} } ) {
-        say "- $sensor: $pressures{$station}{$sensor}{pretty}";
-    }
-}
-
-my %humidities = $netatmo->humidities;
-foreach my $station ( sort keys %humidities ) {
-    say "$station:";
-    foreach my $sensor ( sort keys %{ $humidities{$station} } ) {
-        say "- $sensor: $humidities{$station}{$sensor}{pretty}";
-    }
-}
-
-my %noise = $netatmo->noise;
-foreach my $station ( sort keys %noise ) {
-    say "$station:";
-    foreach my $sensor ( sort keys %{ $noise{$station} } ) {
-        say "- $sensor: $noise{$station}{$sensor}{pretty}";
-    }
-}
-
-my %co2 = $netatmo->co2;
-foreach my $station ( sort keys %co2 ) {
-    say "$station:";
-    foreach my $sensor ( sort keys %{ $co2{$station} } ) {
-        say "- $sensor: $co2{$station}{$sensor}{pretty}";
+foreach my $station ( sort keys %stations ) {
+    my $stationname = $stations{$station}{station_name};
+    foreach my $module ( sort keys %{ $stations{$station}{submodules} } ) {
+        my $modulename = $stations{$station}{submodules}{$module}{module_name};
+        my $sensor;
+        my $temperature = $temperatures{$stationname}{$modulename}{pretty} // '-';
+        my $pressure    = $pressures{$stationname}{$modulename}{pretty}    // '-';
+        my $humidity    = $humidities{$stationname}{$modulename}{pretty}   // '-';
+        my $noiselevel  = $noise{$stationname}{$modulename}{pretty}        // '-';
+        my $co2level    = $co2{$stationname}{$modulename}{pretty}          // '-';
+        say "$modulename: $temperature, $pressure, $humidity, $noiselevel, $co2level";
     }
 }
 
