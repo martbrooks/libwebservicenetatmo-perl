@@ -76,3 +76,20 @@ foreach my $station ( sort keys %humidities ) {
         say "- $sensor: $humidities{$station}{$sensor}{pretty}";
     }
 }
+
+my %noise = $netatmo->noise;
+foreach my $station ( sort keys %noise ) {
+    say "$station:";
+    foreach my $sensor ( sort keys %{ $noise{$station} } ) {
+        say "- $sensor: $noise{$station}{$sensor}{pretty}";
+    }
+}
+
+my %co2 = $netatmo->co2;
+foreach my $station ( sort keys %co2 ) {
+    say "$station:";
+    foreach my $sensor ( sort keys %{ $co2{$station} } ) {
+        say "- $sensor: $co2{$station}{$sensor}{pretty}";
+    }
+}
+

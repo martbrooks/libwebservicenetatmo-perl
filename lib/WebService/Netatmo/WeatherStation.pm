@@ -118,6 +118,44 @@ sub humidities {
     return %humidities;
 }
 
+sub noise {
+    my $self = shift;
+    my %noise;
+    my %stationdata = $self->getstationsdata();
+
+    foreach my $station ( keys %stationdata ) {
+        my $stationname = $stationdata{$station}{station_name};
+        foreach my $submodule ( keys %{ $stationdata{$station}{submodules} } ) {
+            if ( $stationdata{$station}{submodules}{$submodule}{hasNoise} ) {
+                my $submodulename = $stationdata{$station}{submodules}{$submodule}{module_name};
+                my $noiselevel    = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{Noise};
+                $noise{$stationname}{$submodulename}{raw}    = $noiselevel;
+                $noise{$stationname}{$submodulename}{pretty} = $noiselevel . "dB";
+            }
+        }
+    }
+    return %noise;
+}
+
+sub co2 {
+    my $self = shift;
+    my %co2;
+    my %stationdata = $self->getstationsdata();
+
+    foreach my $station ( keys %stationdata ) {
+        my $stationname = $stationdata{$station}{station_name};
+        foreach my $submodule ( keys %{ $stationdata{$station}{submodules} } ) {
+            if ( $stationdata{$station}{submodules}{$submodule}{hasCO2} ) {
+                my $submodulename = $stationdata{$station}{submodules}{$submodule}{module_name};
+                my $co2level      = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{CO2};
+                $co2{$stationname}{$submodulename}{raw}    = $co2level;
+                $co2{$stationname}{$submodulename}{pretty} = $co2level . "ppm";
+            }
+        }
+    }
+    return %co2;
+}
+
 sub __post_process_station_data {
     my %stationdata;
     my $content = shift;
