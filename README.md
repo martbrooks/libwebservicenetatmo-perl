@@ -7,10 +7,10 @@ should then be able to run example.pl:
 
 ```
 martin@prole ~/netatmo $ ./example.pl 
-Hitchin Close
-- Bella's Bedroom: 19.7
-- Martin's Office: 21.9
-- Garden: -1.2
+martin@prole ~/netatmo $ ./example.pl 
+Garden: 8.7℃, -, 64%, -, -
+Bella's Bedroom: 19.4℃, -, 52%, -, 504ppm
+Martin's Office: 22.6℃, 1024.7mbar, 44%, 50dB, 579ppm
 ```
 
 Currently there's only a module for the weather modules as those are all I
