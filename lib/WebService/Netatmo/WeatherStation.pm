@@ -147,7 +147,7 @@ sub co2 {
         foreach my $submodule ( keys %{ $stationdata{$station}{submodules} } ) {
             if ( $stationdata{$station}{submodules}{$submodule}{hasCO2} ) {
                 my $submodulename = $stationdata{$station}{submodules}{$submodule}{module_name};
-                my $co2level      = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{CO2};
+                my $co2level = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{CO2} // '<No reading>';
                 $co2{$stationname}{$submodulename}{raw}    = $co2level;
                 $co2{$stationname}{$submodulename}{pretty} = $co2level . "ppm";
             }
