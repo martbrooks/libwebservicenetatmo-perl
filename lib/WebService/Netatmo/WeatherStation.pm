@@ -7,7 +7,7 @@ use JSON::MaybeXS;
 
 extends 'WebService::Netatmo::Common';
 
-our $API   = 'https://api.netatmo.net/api';
+our $API   = 'https://api.netatmo.net';
 our $cache = '';
 
 sub getstationsdata {
@@ -16,7 +16,7 @@ sub getstationsdata {
     if ( $cache eq '' ) {
         my $ua = LWP::UserAgent->new;
         my $r  = $ua->post(
-            "$API/getstationsdata",
+            "$API/api/getstationsdata",
             [
                 access_token => $self->access_token,
             ]

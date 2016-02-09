@@ -8,7 +8,7 @@ use JSON::MaybeXS;
 use LWP::UserAgent;
 use YAML::XS qw(LoadFile DumpFile);
 
-our $API = 'https://api.netatmo.net/api';
+our $API = 'https://api.netatmo.net';
 
 has client_id     => ( is => 'ro', required => 1 );
 has client_secret => ( is => 'ro', required => 1 );
@@ -73,7 +73,7 @@ sub __get_token {
     my $self = shift;
     my $ua   = LWP::UserAgent->new;
     my $r    = $ua->post(
-        'https://api.netatmo.net/oauth2/token',
+        "$API/oauth2/token",
         [
             grant_type    => 'password',
             client_id     => $self->client_id,
@@ -96,7 +96,7 @@ sub __refresh_token {
     my $self = shift;
     my $ua   = LWP::UserAgent->new;
     my $r    = $ua->post(
-        'https://api.netatmo.net/oauth2/token',
+        "$API/oauth2/token",
         [
             grant_type    => 'refresh_token',
             client_id     => $self->client_id,
