@@ -14,8 +14,7 @@ use WebService::Netatmo::WeatherStation;
 
 binmode STDOUT, ':utf8';
 
-
-my $yaml = LoadFile("settings.yaml");
+my $yaml          = LoadFile("settings.yaml");
 my $client_id     = $yaml->{client_id};
 my $client_secret = $yaml->{client_secret};
 my $username      = $yaml->{username};
