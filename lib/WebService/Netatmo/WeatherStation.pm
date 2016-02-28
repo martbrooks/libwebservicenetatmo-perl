@@ -156,6 +156,32 @@ sub co2 {
     return %co2;
 }
 
+sub rain {
+    my $self = shift;
+    my %rain;
+    my %stationdata = $self->getstationsdata();
+
+    foreach my $station ( keys %stationdata ) {
+        my $stationname = $stationdata{$station}{station_name};
+        foreach my $submodule ( keys %{ $stationdata{$station}{submodules} } ) {
+            if ( $stationdata{$station}{submodules}{$submodule}{hasRain} ) {
+                my $submodulename = $stationdata{$station}{submodules}{$submodule}{module_name};
+                my $rainlast      = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{Rain};
+                my $rainhour      = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{sum_rain_1};
+                my $raintoday     = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{sum_rain_24};
+
+                $rain{$stationname}{$submodulename}{RainLast}{raw}        = $rainlast;
+                $rain{$stationname}{$submodulename}{RainLastHour}{raw}    = $rainhour;
+                $rain{$stationname}{$submodulename}{RainToday}{raw}       = $raintoday;
+                $rain{$stationname}{$submodulename}{RainLast}{pretty}     = $rainlast . 'mm';
+                $rain{$stationname}{$submodulename}{RainLastHour}{pretty} = $rainhour . 'mm';
+                $rain{$stationname}{$submodulename}{RainToday}{pretty}    = $raintoday . 'mm';
+            }
+        }
+    }
+    return %rain;
+}
+
 sub wind {
     my $self = shift;
     my %wind;
@@ -175,12 +201,12 @@ sub wind {
                 }
                 if ( $unit == 1 ) {
                     $strength = sprintf( "%.1f", $strength * 0.621371 );
-                    $strength+=0;
+                    $strength += 0;
                     $strength .= 'mph';
                 }
                 if ( $unit == 2 ) {
                     $strength = sprintf( "%.1f", $strength * 0.277778 );
-                    $strength+=0;
+                    $strength += 0;
                     $strength .= 'm/s';
                 }
                 if ( $unit == 3 ) {
@@ -189,7 +215,7 @@ sub wind {
                 }
                 if ( $unit == 4 ) {
                     $strength = sprintf( "%.1f", $strength * 0.539957 );
-                    $strength+=0;
+                    $strength += 0;
                     $strength .= ' knots';
                 }
                 $wind{$stationname}{$submodulename}{WindStrength}{pretty} = $strength;

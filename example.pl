@@ -38,6 +38,7 @@ my %humidities   = $netatmo->humidities;
 my %noise        = $netatmo->noise;
 my %co2          = $netatmo->co2;
 my %wind         = $netatmo->wind;
+my %rain         = $netatmo->rain;
 
 foreach my $station ( sort keys %stations ) {
     my $stationname = $stations{$station}{station_name};
@@ -45,14 +46,29 @@ foreach my $station ( sort keys %stations ) {
     foreach my $module ( sort keys %{ $stations{$station}{submodules} } ) {
         my $modulename = $stations{$station}{submodules}{$module}{module_name};
         my $sensor;
-        my $temperature  = $temperatures{$stationname}{$modulename}{pretty}       // '-';
-        my $pressure     = $pressures{$stationname}{$modulename}{pretty}          // '-';
-        my $humidity     = $humidities{$stationname}{$modulename}{pretty}         // '-';
-        my $noiselevel   = $noise{$stationname}{$modulename}{pretty}              // '-';
-        my $co2level     = $co2{$stationname}{$modulename}{pretty}                // '-';
-        my $windstrength = $wind{$stationname}{$modulename}{WindStrength}{pretty} // '-';
-        my $windangle    = $wind{$stationname}{$modulename}{WindAngle}{pretty}    // '-';
-        say "-- $modulename: $temperature, $pressure, $humidity, $noiselevel, $co2level, $windstrength @ $windangle";
+        my $temperature  = $temperatures{$stationname}{$modulename}{pretty}       // '';
+        my $pressure     = $pressures{$stationname}{$modulename}{pretty}          // '';
+        my $humidity     = $humidities{$stationname}{$modulename}{pretty}         // '';
+        my $noiselevel   = $noise{$stationname}{$modulename}{pretty}              // '';
+        my $co2level     = $co2{$stationname}{$modulename}{pretty}                // '';
+        my $windstrength = $wind{$stationname}{$modulename}{WindStrength}{pretty} // '';
+        my $windangle    = $wind{$stationname}{$modulename}{WindAngle}{pretty}    // '?';
+        my $rainlast     = $rain{$stationname}{$modulename}{RainLast}{pretty}     // '';
+        my $raintoday    = $rain{$stationname}{$modulename}{RainToday}{pretty}    // '';
+
+        my $output = "-- $modulename: ";
+        $output .= "$temperature, "                if $temperature ne '';
+        $output .= "$pressure, "                   if $pressure ne '';
+        $output .= "$humidity, "                   if $humidity ne '';
+        $output .= "$noiselevel, "                 if $noiselevel ne '';
+        $output .= "$co2level, "                   if $co2level ne '';
+        $output .= "$windstrength @ $windangle, "  if $windstrength ne '';
+        $output .= "$rainlast ($raintoday today) " if $rainlast ne '';
+
+        $output =~ s/\s+$//g;
+        $output =~ s/,$//g;
+
+        say "$output.";
     }
     print "\n";
 }
