@@ -236,6 +236,9 @@ sub __post_process_station_data {
 sub __kphtobeaufort {
     my $kph = shift;
 
+    # The Beaufort scale seems a little arbitrary.
+    # These numbers taken from http://www.windfinder.com/wind/windspeed.htm
+
     if ( $kph <= 1 ) {
         return 0;
     }
