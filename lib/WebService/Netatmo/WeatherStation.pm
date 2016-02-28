@@ -174,15 +174,19 @@ sub wind {
                     $strength .= 'kph';
                 }
                 if ( $unit == 1 ) {
+                    $strength = sprintf( "%.1f", $strength * 0.621371 );
                     $strength .= 'mph';
                 }
                 if ( $unit == 2 ) {
+                    $strength = sprintf( "%.1f", $strength * 0.277778 );
                     $strength .= 'm/s';
                 }
                 if ( $unit == 3 ) {
-                    $strength .= "Wind force $strength";
+                    $strength = __kphtobeaufort($strength);
+                    $strength = "Wind force $strength";
                 }
                 if ( $unit == 4 ) {
+                    $strength = sprintf( "%.1f", $strength * 0.539957 );
                     $strength .= ' knots';
                 }
                 $wind{$stationname}{$submodulename}{WindStrength}{pretty} = $strength;
@@ -227,6 +231,46 @@ sub __post_process_station_data {
         }
     }
     return %stationdata;
+}
+
+sub __kphtobeaufort {
+    my $kph = shift;
+
+    if ( $kph <= 1 ) {
+        return 1;
+    }
+    if ( $kph <= 6 ) {
+        return 2;
+    }
+    if ( $kph <= 12 ) {
+        return 3;
+    }
+    if ( $kph <= 20 ) {
+        return 4;
+    }
+    if ( $kph <= 29 ) {
+        return 5;
+    }
+    if ( $kph <= 39 ) {
+        return 6;
+    }
+    if ( $kph <= 50 ) {
+        return 7;
+    }
+    if ( $kph <= 62 ) {
+        return 8;
+    }
+    if ( $kph <= 75 ) {
+        return 9;
+    }
+    if ( $kph <= 89 ) {
+        return 10;
+    }
+    if ( $kph <= 103 ) {
+        return 11;
+    }
+
+    return 12;
 }
 
 1;
