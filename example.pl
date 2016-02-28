@@ -37,6 +37,7 @@ my %pressures    = $netatmo->pressures;
 my %humidities   = $netatmo->humidities;
 my %noise        = $netatmo->noise;
 my %co2          = $netatmo->co2;
+my %wind         = $netatmo->wind;
 
 foreach my $station ( sort keys %stations ) {
     my $stationname = $stations{$station}{station_name};
@@ -44,13 +45,14 @@ foreach my $station ( sort keys %stations ) {
     foreach my $module ( sort keys %{ $stations{$station}{submodules} } ) {
         my $modulename = $stations{$station}{submodules}{$module}{module_name};
         my $sensor;
-        my $temperature = $temperatures{$stationname}{$modulename}{pretty} // '-';
-        my $pressure    = $pressures{$stationname}{$modulename}{pretty}    // '-';
-        my $humidity    = $humidities{$stationname}{$modulename}{pretty}   // '-';
-        my $noiselevel  = $noise{$stationname}{$modulename}{pretty}        // '-';
-        my $co2level    = $co2{$stationname}{$modulename}{pretty}          // '-';
-        say "-- $modulename: $temperature, $pressure, $humidity, $noiselevel, $co2level";
+        my $temperature  = $temperatures{$stationname}{$modulename}{pretty}       // '-';
+        my $pressure     = $pressures{$stationname}{$modulename}{pretty}          // '-';
+        my $humidity     = $humidities{$stationname}{$modulename}{pretty}         // '-';
+        my $noiselevel   = $noise{$stationname}{$modulename}{pretty}              // '-';
+        my $co2level     = $co2{$stationname}{$modulename}{pretty}                // '-';
+        my $windstrength = $wind{$stationname}{$modulename}{WindStrength}{pretty} // '-';
+        my $windangle    = $wind{$stationname}{$modulename}{WindAngle}{pretty}    // '-';
+        say "-- $modulename: $temperature, $pressure, $humidity, $noiselevel, $co2level, $windstrength @ $windangle";
     }
     print "\n";
 }
-

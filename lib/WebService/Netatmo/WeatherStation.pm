@@ -156,6 +156,44 @@ sub co2 {
     return %co2;
 }
 
+sub wind {
+    my $self = shift;
+    my %wind;
+    my %stationdata = $self->getstationsdata();
+
+    foreach my $station ( keys %stationdata ) {
+        my $stationname = $stationdata{$station}{station_name};
+        my $unit        = $stationdata{$station}{administrative}{windunit};
+        foreach my $submodule ( keys %{ $stationdata{$station}{submodules} } ) {
+            if ( $stationdata{$station}{submodules}{$submodule}{hasWind} ) {
+                my $submodulename = $stationdata{$station}{submodules}{$submodule}{module_name};
+                my $strength      = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{WindStrength} // '<No reading>';
+                my $angle         = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{WindAngle} // '<No reading>';
+                $wind{$stationname}{$submodulename}{WindStrength}{raw} = $strength;
+                if ( $unit == 0 ) {
+                    $strength .= 'kph';
+                }
+                if ( $unit == 1 ) {
+                    $strength .= 'mph';
+                }
+                if ( $unit == 2 ) {
+                    $strength .= 'm/s';
+                }
+                if ( $unit == 3 ) {
+                    $strength .= "Wind force $strength";
+                }
+                if ( $unit == 4 ) {
+                    $strength .= ' knots';
+                }
+                $wind{$stationname}{$submodulename}{WindStrength}{pretty} = $strength;
+                $wind{$stationname}{$submodulename}{WindAngle}{raw}       = $angle;
+                $wind{$stationname}{$submodulename}{WindAngle}{pretty}    = "$angle\x{00B0}";
+            }
+        }
+    }
+    return %wind;
+}
+
 sub __post_process_station_data {
     my %stationdata;
     my $content = shift;
