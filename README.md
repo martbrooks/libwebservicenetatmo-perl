@@ -6,18 +6,17 @@ Copy 'example_settings.yaml' to 'settings.yaml', edit appropriately, and you
 should then be able to run example.pl:
 
 ```
-martin@prole ~/netatmo $ ./example.pl 
 - Office in Paris
 -- Netatmo HQ: 7.6℃, 59%.
--- Coffee Machine: 23.1℃, 24%, 395ppm.
+-- Coffee Machine: 23.1℃, 24%, 378ppm.
 -- Meeting Room: 24.4℃, 22%, 484ppm.
--- Reception: 22.8℃, 21%, 388ppm.
+-- Reception: 22.8℃, 21%, 396ppm.
 -- Rain Gauge: 0mm (0mm today).
--- Wind Gauge: 1.2mph @ 90°.
--- Boss's Office: 23.5℃, 1009.9mbar, 20%, 34dB, 395ppm.
+-- Wind Gauge: 1.2mph @ 45°.
+-- Boss's Office: 23.5℃, 1010mbar, 20%, 33dB, 402ppm.
 
 - Hitchin Close
--- Garden: 52%.
--- Bella's Bedroom: 46%, 848ppm.
--- Martin's Office: 1021.9mbar, 38%, 41dB, 709ppm.
+-- Garden: 7.6℃, 53%.
+-- Bella's Bedroom: 18.3℃, 46%, 868ppm.
+-- Martin's Office: 21.8℃, 1022.2mbar, 38%, 39dB, 764ppm.
 ```
