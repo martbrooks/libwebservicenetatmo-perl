@@ -7,10 +7,17 @@ should then be able to run example.pl:
 
 ```
 martin@prole ~/netatmo $ ./example.pl 
-Garden: 8.7℃, -, 64%, -, -
-Bella's Bedroom: 19.4℃, -, 52%, -, 504ppm
-Martin's Office: 22.6℃, 1024.7mbar, 44%, 50dB, 579ppm
-```
+- Office in Paris
+-- Netatmo HQ: 59%.
+-- Coffee Machine: 24%, 395ppm.
+-- Meeting Room: 22%, 484ppm.
+-- Reception: 21%, 388ppm.
+-- Rain Gauge: 0mm (0mm today).
+-- Wind Gauge: 1.2mph @ 90°.
+-- Boss's Office: 1009.9mbar, 20%, 34dB, 395ppm.
 
-Currently there's only a module for the weather modules as those are all I
-have.  It should be fairly easy to extend for the other devices.
+- Hitchin Close
+-- Garden: 7.5℃, 52%.
+-- Bella's Bedroom: 18.3℃, 46%, 848ppm.
+-- Martin's Office: 21.8℃, 1021.9mbar, 38%, 41dB, 709ppm.
+```
