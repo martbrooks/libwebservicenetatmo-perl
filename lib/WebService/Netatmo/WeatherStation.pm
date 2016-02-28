@@ -175,10 +175,12 @@ sub wind {
                 }
                 if ( $unit == 1 ) {
                     $strength = sprintf( "%.1f", $strength * 0.621371 );
+                    $strength+=0;
                     $strength .= 'mph';
                 }
                 if ( $unit == 2 ) {
                     $strength = sprintf( "%.1f", $strength * 0.277778 );
+                    $strength+=0;
                     $strength .= 'm/s';
                 }
                 if ( $unit == 3 ) {
@@ -187,6 +189,7 @@ sub wind {
                 }
                 if ( $unit == 4 ) {
                     $strength = sprintf( "%.1f", $strength * 0.539957 );
+                    $strength+=0;
                     $strength .= ' knots';
                 }
                 $wind{$stationname}{$submodulename}{WindStrength}{pretty} = $strength;
