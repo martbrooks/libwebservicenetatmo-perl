@@ -237,36 +237,39 @@ sub __kphtobeaufort {
     my $kph = shift;
 
     if ( $kph <= 1 ) {
-        return 1;
+        return 0;
     }
     if ( $kph <= 6 ) {
-        return 2;
+        return 1;
     }
     if ( $kph <= 12 ) {
-        return 3;
+        return 2;
     }
     if ( $kph <= 20 ) {
-        return 4;
+        return 3;
     }
     if ( $kph <= 29 ) {
-        return 5;
+        return 4;
     }
     if ( $kph <= 39 ) {
-        return 6;
+        return 5;
     }
     if ( $kph <= 50 ) {
-        return 7;
+        return 6;
     }
     if ( $kph <= 62 ) {
-        return 8;
+        return 7;
     }
     if ( $kph <= 75 ) {
-        return 9;
+        return 8;
     }
     if ( $kph <= 89 ) {
-        return 10;
+        return 9;
     }
     if ( $kph <= 103 ) {
+        return 10;
+    }
+    if ( $kph <= 118 ) {
         return 11;
     }
 
