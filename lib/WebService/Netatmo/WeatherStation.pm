@@ -43,10 +43,8 @@ sub temperatures {
     );
 
     foreach my $station ( keys %stationdata ) {
-        my $stationname  = $stationdata{$station}{station_name};
-        my $unit         = $stationdata{$station}{administrative}{unit};
-        my $windunit     = $stationdata{$station}{administrative}{windunit};
-        my $pressureunit = $stationdata{$station}{administrative}{pressureunit};
+        my $stationname = $stationdata{$station}{station_name};
+        my $unit        = $stationdata{$station}{administrative}{unit};
 
         foreach my $submodule ( keys %{ $stationdata{$station}{submodules} } ) {
             if ( $stationdata{$station}{submodules}{$submodule}{hasTemperature} ) {
@@ -60,8 +58,8 @@ sub temperatures {
                 $temperatures{$stationname}{$submodulename}{pretty} = $temperature . $glyphmap{$unit};
             }
         }
-        return %temperatures;
     }
+    return %temperatures;
 }
 
 sub pressures {
