@@ -10,13 +10,14 @@ use YAML::XS qw(LoadFile DumpFile);
 
 our $API = 'https://api.netatmo.net';
 
+has station       => ( is => 'ro' );
 has client_id     => ( is => 'ro', required => 1 );
 has client_secret => ( is => 'ro', required => 1 );
 has username      => ( is => 'ro', required => 1 );
 has password      => ( is => 'ro', required => 1 );
 has tokenstore    => ( is => 'ro', required => 1 );
 has debug         => ( is => 'ro' );
-has access_token  => (
+has access_token => (
     is      => 'rw',
     lazy    => 1,
     builder => sub { $_[0]->_get_or_refresh_token() }
