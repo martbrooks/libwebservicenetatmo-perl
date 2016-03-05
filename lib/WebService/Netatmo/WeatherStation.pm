@@ -45,7 +45,7 @@ sub temperatures {
     foreach my $station ( keys %stationdata ) {
         my $stationname = $stationdata{$station}{station_name};
         my $unit        = $stationdata{$station}{administrative}{unit};
-        next if ( $self->station ne '' && $stationname ne $self->station );
+        next if ( $self->station && $self->station ne '' && $stationname ne $self->station );
 
         foreach my $submodule ( keys %{ $stationdata{$station}{submodules} } ) {
             if ( $stationdata{$station}{submodules}{$submodule}{hasTemperature} ) {
