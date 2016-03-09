@@ -127,7 +127,7 @@ sub noise {
         foreach my $submodule ( keys %{ $stationdata{$station}{submodules} } ) {
             if ( $stationdata{$station}{submodules}{$submodule}{hasNoise} ) {
                 my $submodulename = $stationdata{$station}{submodules}{$submodule}{module_name};
-                my $noiselevel    = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{Noise};
+                my $noiselevel    = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{Noise} // 'NaN';
                 $noise{$stationname}{$submodulename}{raw}    = $noiselevel;
                 $noise{$stationname}{$submodulename}{pretty} = $noiselevel . "dB";
             }
@@ -146,7 +146,7 @@ sub co2 {
         foreach my $submodule ( keys %{ $stationdata{$station}{submodules} } ) {
             if ( $stationdata{$station}{submodules}{$submodule}{hasCO2} ) {
                 my $submodulename = $stationdata{$station}{submodules}{$submodule}{module_name};
-                my $co2level = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{CO2} // '<No reading>';
+                my $co2level = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{CO2} // 'NaN';
                 $co2{$stationname}{$submodulename}{raw}    = $co2level;
                 $co2{$stationname}{$submodulename}{pretty} = $co2level . "ppm";
             }
@@ -165,9 +165,9 @@ sub rain {
         foreach my $submodule ( keys %{ $stationdata{$station}{submodules} } ) {
             if ( $stationdata{$station}{submodules}{$submodule}{hasRain} ) {
                 my $submodulename = $stationdata{$station}{submodules}{$submodule}{module_name};
-                my $rainlast      = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{Rain};
-                my $rainhour      = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{sum_rain_1};
-                my $raintoday     = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{sum_rain_24};
+                my $rainlast      = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{Rain} // 'NaN';
+                my $rainhour      = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{sum_rain_1} // 'NaN';
+                my $raintoday     = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{sum_rain_24} // 'Nan';
 
                 $rain{$stationname}{$submodulename}{RainLast}{raw}        = $rainlast;
                 $rain{$stationname}{$submodulename}{RainLastHour}{raw}    = $rainhour;
@@ -192,8 +192,8 @@ sub wind {
         foreach my $submodule ( keys %{ $stationdata{$station}{submodules} } ) {
             if ( $stationdata{$station}{submodules}{$submodule}{hasWind} ) {
                 my $submodulename = $stationdata{$station}{submodules}{$submodule}{module_name};
-                my $strength      = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{WindStrength} // '<No reading>';
-                my $angle         = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{WindAngle} // '<No reading>';
+                my $strength      = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{WindStrength} // 'NaN';
+                my $angle         = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{WindAngle} // 'NaN';
                 $wind{$stationname}{$submodulename}{WindStrength}{raw} = $strength;
                 if ( $unit == 0 ) {
                     $strength .= 'kph';
