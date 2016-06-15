@@ -167,7 +167,7 @@ sub rain {
                 my $submodulename = $stationdata{$station}{submodules}{$submodule}{module_name};
                 my $rainlast      = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{Rain} // 'NaN';
                 my $rainhour      = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{sum_rain_1} // 'NaN';
-                my $raintoday     = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{sum_rain_24} // 'Nan';
+                my $raintoday     = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{sum_rain_24} // 'NaN';
 
                 $rain{$stationname}{$submodulename}{RainLast}{raw}        = $rainlast;
                 $rain{$stationname}{$submodulename}{RainLastHour}{raw}    = $rainhour;
