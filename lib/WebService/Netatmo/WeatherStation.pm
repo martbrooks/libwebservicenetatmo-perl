@@ -168,6 +168,8 @@ sub rain {
                 my $rainlast      = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{Rain} // 'NaN';
                 my $rainhour      = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{sum_rain_1} // 'NaN';
                 my $raintoday     = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{sum_rain_24} // 'NaN';
+                $rainlast  = sprintf( "%.1f", $rainlast );
+                $rainhour  = sprintf( "%.1f", $rainhour );
                 $raintoday = sprintf( "%.1f", $raintoday );
 
                 $rain{$stationname}{$submodulename}{RainLast}{raw}        = $rainlast;
