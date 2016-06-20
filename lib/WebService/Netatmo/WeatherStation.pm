@@ -127,7 +127,7 @@ sub noise {
         foreach my $submodule ( keys %{ $stationdata{$station}{submodules} } ) {
             if ( $stationdata{$station}{submodules}{$submodule}{hasNoise} ) {
                 my $submodulename = $stationdata{$station}{submodules}{$submodule}{module_name};
-                my $noiselevel    = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{Noise} // 'NaN';
+                my $noiselevel = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{Noise} // 'NaN';
                 $noise{$stationname}{$submodulename}{raw}    = $noiselevel;
                 $noise{$stationname}{$submodulename}{pretty} = $noiselevel . "dB";
             }
@@ -168,6 +168,7 @@ sub rain {
                 my $rainlast      = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{Rain} // 'NaN';
                 my $rainhour      = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{sum_rain_1} // 'NaN';
                 my $raintoday     = $stationdata{$station}{submodules}{$submodule}{dashboard_data}->{sum_rain_24} // 'NaN';
+                $raintoday = sprintf( "%.1f", $raintoday );
 
                 $rain{$stationname}{$submodulename}{RainLast}{raw}        = $rainlast;
                 $rain{$stationname}{$submodulename}{RainLastHour}{raw}    = $rainhour;
